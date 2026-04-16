@@ -20,7 +20,7 @@
 
     body {
       margin: 0;
-      background: var(--page-bg);
+      background: #354349;
       color: var(--text-primary);
       font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.45;
@@ -31,40 +31,17 @@
       margin: 24px auto 48px;
     }
 
-    .bloomerang-header {
-      background: linear-gradient(135deg, #ffffff, #f5f9ff);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(18, 58, 103, 0.08);
-      padding: 18px 22px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
+    .bloomerang-card-brand {
       margin-bottom: 20px;
+      border-bottom: 1px solid #e4ebf3;
+      padding-bottom: 16px;
     }
 
-    .bloomerang-logo-placeholder {
-      width: 72px;
-      height: 72px;
-      border-radius: 12px;
-      border: 2px dashed #99abc0;
-      background: #ecf2f9;
-      display: grid;
-      place-items: center;
-      color: #5f7692;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      flex: 0 0 auto;
-    }
-
-    .bloomerang-org-name {
-      margin: 0;
-      font-size: clamp(1.25rem, 1.15rem + 0.45vw, 1.65rem);
-      color: var(--brand-navy);
-      font-weight: 700;
-      letter-spacing: 0.01em;
+    .bloomerang-card-brand img {
+      display: block;
+      max-width: 320px;
+      width: min(100%, 320px);
+      height: auto;
     }
 
     .bloomerang-layout {
@@ -155,6 +132,32 @@
       padding: 4px 0 !important;
     }
 
+    .bloomerang-form-slot .donation-form .section.donation .field.radio {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .bloomerang-form-slot .donation-form .section.donation .field.radio input[name="donation-level"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0 !important;
+      height: 0;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .bloomerang-form-slot .donation-form .section.donation .field.radio .custom-donation-amount {
+      width: 140px !important;
+      min-height: 40px;
+      margin-left: auto;
+      font-weight: 600;
+      text-align: right;
+    }
+
     .bloomerang-form-slot .donation-form .field input,
     .bloomerang-form-slot .donation-form .field select,
     .bloomerang-form-slot .donation-form .field textarea,
@@ -234,7 +237,6 @@
         margin-top: 10px;
       }
 
-      .bloomerang-header,
       .bloomerang-form-card,
       .bloomerang-contact-card {
         border-radius: 12px;
@@ -245,13 +247,11 @@
 </head>
 <body>
   <main class="bloomerang-page">
-    <header class="bloomerang-header" aria-label="Organization branding">
-      <div class="bloomerang-logo-placeholder" aria-hidden="true">Logo</div>
-      <h1 class="bloomerang-org-name">Fredericksburg ISD Education Foundation</h1>
-    </header>
-
     <section class="bloomerang-layout" aria-label="Donation form and contact information">
       <div class="bloomerang-form-card">
+        <div class="bloomerang-card-brand" aria-label="Organization branding">
+          <img src="https://static.wixstatic.com/media/193063_22eb8eb31dce43e9ae9acf720da9a622~mv2.png/v1/fill/w_412,h_154,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/193063_22eb8eb31dce43e9ae9acf720da9a622~mv2.png" alt="Fredericksburg ISD Education Foundation" />
+        </div>
         <div id="self-hosted-form-slot" class="bloomerang-form-slot"></div>
       </div>
 
@@ -941,6 +941,99 @@
                         };
 
                         applySelfHostedDonationLayout();
+
+                        var setupDonationOptionAmounts = function() {
+                          var donationSection = jQuery('.donation-form .section.donation');
+                          if (!donationSection.length) { return; }
+
+                          var parseAmount = function(rawValue) {
+                            if (rawValue === undefined || rawValue === null) { return NaN; }
+                            var cleaned = String(rawValue).replace(/[^0-9.\-]/g, '');
+                            if (!cleaned) { return NaN; }
+                            var parsed = parseFloat(cleaned);
+                            return isNaN(parsed) ? NaN : parsed;
+                          };
+
+                          var formatAmount = function(amount) {
+                            if (isNaN(amount)) { return ''; }
+                            if (typeof accounting !== 'undefined') {
+                              return accounting.formatMoney(amount);
+                            }
+                            return '$' + amount.toFixed(2);
+                          };
+
+                          var syncDonationAmounts = function() {
+                            Bloomerang.Util.calculateDonationTrueImpact();
+                            Bloomerang.Util.updateDonateButtonText();
+                          };
+
+                          donationSection.find('.field.other-option, .field.other-amount').hide();
+
+                          donationSection.find('.field.radio').not('.other-option').each(function() {
+                            var row = jQuery(this);
+                            var radio = row.find('input[name="donation-level"]');
+                            if (!radio.length) { return; }
+
+                            var label = row.find('span.label');
+                            if (label.length) {
+                              label.text(
+                                label.text().replace(/,\s*please fill in amount as "Other," then choose "My donation is for" below\.?\s*Thank you!?/i, '').trim()
+                              );
+                            }
+
+                            var existingInput = row.find('.custom-donation-amount');
+                            if (!existingInput.length) {
+                              var initialAmount = parseAmount(radio.val());
+                              var amountInput = jQuery('<input type="text" class="custom-donation-amount" inputmode="decimal" placeholder="$0.00" />');
+                              if (!isNaN(initialAmount)) {
+                                amountInput.val(formatAmount(initialAmount));
+                                radio.val(initialAmount.toFixed(2));
+                              }
+                              row.append(amountInput);
+                              existingInput = amountInput;
+                            }
+
+                            var applyAmountSelection = function() {
+                              var amountValue = parseAmount(existingInput.val());
+                              if (!isNaN(amountValue)) {
+                                radio.prop('checked', true);
+                                radio.val(amountValue.toFixed(2));
+                                existingInput.val(formatAmount(amountValue));
+                              } else {
+                                radio.prop('checked', true);
+                              }
+                              syncDonationAmounts();
+                            };
+
+                            existingInput.on('focus click', function() {
+                              radio.prop('checked', true);
+                              syncDonationAmounts();
+                            });
+
+                            existingInput.on('change blur', function() {
+                              applyAmountSelection();
+                            });
+
+                            existingInput.on('input', function() {
+                              var amountValue = parseAmount(existingInput.val());
+                              if (!isNaN(amountValue)) {
+                                radio.prop('checked', true);
+                                radio.val(amountValue.toFixed(2));
+                              }
+                              syncDonationAmounts();
+                            });
+
+                            row.on('click', function(event) {
+                              if (!jQuery(event.target).is('.custom-donation-amount')) {
+                                existingInput.trigger('focus');
+                                radio.prop('checked', true);
+                                syncDonationAmounts();
+                              }
+                            });
+                          });
+                        };
+
+                        setupDonationOptionAmounts();
                         
                          Bloomerang.Util.requireStripe(function() {
                                         Bloomerang.Util.Stripe = Stripe('pk_live_h7BuXrwizAt906cIApz0LyIv00rntGoxHU'); 
@@ -998,7 +1091,7 @@
                         Bloomerang.Data.PayPal.IsPayPalVenmoEnabled = false;
                                            jQuery("form.donation-form .recurring-paypal-venmo-label-info, #donation-form .recurring-paypal-venmo-label-info").remove();
                                            jQuery("#paypal-button-container").remove();
-										                                           jQuery("form.donation-form .PayPalVenmo, #donation-form .PayPalVenmo").remove();
+                                           jQuery("form.donation-form .PayPalVenmo, #donation-form .PayPalVenmo").remove();
                                            jQuery("form.donation-form .PayPal, #donation-form .PayPal").remove();
                                            jQuery("form.donation-form .Venmo, #donation-form .Venmo").remove();
 Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.Data.PayPal.IsVenmoSameDayDonationEnabled = false;
@@ -1254,8 +1347,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         };
         
         Bloomerang.Util.applyDonationCustomFields = function (obj, type) {
-        
-            // Clear any fields from a previous failed submission
+			            // Clear any fields from a previous failed submission
             obj.clearCustomFields();
         
             // Apply all <input> (not multiselect), <select> and <textarea> fields
@@ -1498,7 +1590,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         }, "Invalid amount");
         
         jQuery.validator.classRuleSettings.otherAmount = { otherAmount: true };
-		
+
         jQuery.validator.addMethod("number", function (value, element, options) {
           return !value ||
               value
@@ -1838,7 +1930,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
             jQuery("#paypal-button-container").show();
           }
           else if(jQuery(this).attr("id") == "PayPal") {
-            jQuery("#donation-form .accountNumber, \
+			              jQuery("#donation-form .accountNumber, \
                     #donation-form .routingNumber, \
                     #donation-form .sample-check").hide();
             jQuery("#stripe-cc-fields").hide();
@@ -1896,8 +1988,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         
 })(jQuery);
     };
-    
-                var startBloomerangLoad = function() {
+	                var startBloomerangLoad = function() {
                     if (window.bloomerangLoadStarted == undefined) {
                         window.bloomerangLoadStarted = true;
                         var script = document.createElement('script');
