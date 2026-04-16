@@ -4,8 +4,269 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Donation Form</title>
+  <style>
+    :root {
+      --brand-navy: #123a67;
+      --brand-blue: #1f6aa5;
+      --surface: #ffffff;
+      --page-bg: #eef3f8;
+      --text-primary: #1e2937;
+      --text-muted: #5f6f82;
+      --border: #d8e0ea;
+      --shadow: 0 14px 40px rgba(17, 38, 64, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page-bg);
+      color: var(--text-primary);
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .bloomerang-page {
+      width: min(1120px, 100% - 32px);
+      margin: 24px auto 48px;
+    }
+
+    .bloomerang-header {
+      background: linear-gradient(135deg, #ffffff, #f5f9ff);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(18, 58, 103, 0.08);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .bloomerang-logo-placeholder {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      border: 2px dashed #99abc0;
+      background: #ecf2f9;
+      display: grid;
+      place-items: center;
+      color: #5f7692;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      flex: 0 0 auto;
+    }
+
+    .bloomerang-org-name {
+      margin: 0;
+      font-size: clamp(1.25rem, 1.15rem + 0.45vw, 1.65rem);
+      color: var(--brand-navy);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .bloomerang-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(240px, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .bloomerang-form-card,
+    .bloomerang-contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .bloomerang-form-card {
+      padding: 22px;
+      min-height: 160px;
+    }
+
+    .bloomerang-contact-card {
+      padding: 22px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .bloomerang-contact-card h2 {
+      margin: 0 0 8px;
+      color: var(--brand-navy);
+      font-size: 1.3rem;
+    }
+
+    .bloomerang-contact-card p {
+      margin: 0 0 10px;
+      color: var(--text-muted);
+    }
+
+    .bloomerang-contact-card a {
+      color: var(--brand-blue);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .bloomerang-contact-card a:hover { text-decoration: underline; }
+
+    .bloomerang-contact-details {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #e4ebf3;
+      color: var(--text-muted);
+      font-size: 0.96rem;
+    }
+
+    .bloomerang-contact-details strong {
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .bloomerang-form-slot #donation-form-container,
+    .bloomerang-form-slot #donation-processing-container {
+      margin: 0 !important;
+    }
+
+    .bloomerang-form-slot .donation-form {
+      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+      color: var(--text-primary);
+    }
+
+    .bloomerang-form-slot .donation-form .section {
+      border: 1px solid #e2e9f2;
+      border-radius: 12px;
+      background: #fdfefe;
+      margin-bottom: 14px;
+      padding: 14px !important;
+    }
+
+    .bloomerang-form-slot .donation-form h3 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: var(--brand-navy);
+    }
+
+    .bloomerang-form-slot .donation-form .field {
+      margin: 6px 0;
+      padding: 4px 0 !important;
+    }
+
+    .bloomerang-form-slot .donation-form .field input,
+    .bloomerang-form-slot .donation-form .field select,
+    .bloomerang-form-slot .donation-form .field textarea,
+    .bloomerang-form-slot .donation-form #card-element {
+      width: 100% !important;
+      max-width: 100% !important;
+      border: 1px solid #c8d5e5;
+      border-radius: 9px;
+      padding: 11px 12px !important;
+      min-height: 44px;
+      background: #fff;
+    }
+
+    .bloomerang-form-slot .donation-form .field label {
+      color: #243447;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .bloomerang-form-slot .donation-form .field.radio label,
+    .bloomerang-form-slot .donation-form .field.checkbox label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .bloomerang-form-slot .donation-form .field.radio input,
+    .bloomerang-form-slot .donation-form .field.checkbox input {
+      width: auto !important;
+      min-height: auto;
+      margin-top: 2px;
+    }
+
+    .bloomerang-form-slot .donation-form .btn-group {
+      margin-top: 12px;
+    }
+
+    .bloomerang-form-slot .btn-group .btn-submit-donation,
+    .bloomerang-form-slot #express-submit {
+      min-height: 46px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1f6aa5, #174f7b);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 12px 22px !important;
+      box-shadow: 0 8px 18px rgba(31, 106, 165, 0.3);
+    }
+
+    .bloomerang-form-slot .btn-group .btn-submit-donation:hover,
+    .bloomerang-form-slot #express-submit:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    .bloomerang-form-slot .errors {
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .bloomerang-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .bloomerang-contact-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .bloomerang-page {
+        width: calc(100% - 20px);
+        margin-top: 10px;
+      }
+
+      .bloomerang-header,
+      .bloomerang-form-card,
+      .bloomerang-contact-card {
+        border-radius: 12px;
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <main class="bloomerang-page">
+    <header class="bloomerang-header" aria-label="Organization branding">
+      <div class="bloomerang-logo-placeholder" aria-hidden="true">Logo</div>
+      <h1 class="bloomerang-org-name">Fredericksburg ISD Education Foundation</h1>
+    </header>
+
+    <section class="bloomerang-layout" aria-label="Donation form and contact information">
+      <div class="bloomerang-form-card">
+        <div id="self-hosted-form-slot" class="bloomerang-form-slot"></div>
+      </div>
+
+      <aside class="bloomerang-contact-card" aria-label="Contact information">
+        <h2>Questions?</h2>
+        <p>Contact us at:</p>
+        <p><a href="mailto:info@fisdkids.org">info@fisdkids.org</a><br>(830) 997-9551 ext. 1098</p>
+        <div class="bloomerang-contact-details">
+          <strong>Fredericksburg ISD Education Foundation</strong>
+          <div>PO Box 3446</div>
+          <div>Fredericksburg, TX 78624</div>
+        </div>
+      </aside>
+    </section>
+  </main>
 
 <script type="text/javascript" id="bloomerangForm18441216"></script>
 <script type="text/javascript">
@@ -664,6 +925,22 @@
                         ' <a target=\'_blank\' href=\'https://www.google.com/chrome/browser/desktop/\'>Chrome</a> or <a target=\'_blank\' href=\'https://www.mozilla.org/en-US/firefox/new/\'>Firefox</a>.</p>';
                     }
                         jQuery('#bloomerangForm18441216').after(html18441216);
+
+                        var applySelfHostedDonationLayout = function() {
+                          var formSlot = jQuery('#self-hosted-form-slot');
+                          var formContainer = jQuery('#donation-form-container');
+                          var processingContainer = jQuery('#donation-processing-container');
+
+                          if (formSlot.length && formContainer.length) {
+                            formSlot.append(formContainer);
+                          }
+
+                          if (formSlot.length && processingContainer.length) {
+                            formSlot.append(processingContainer);
+                          }
+                        };
+
+                        applySelfHostedDonationLayout();
                         
                          Bloomerang.Util.requireStripe(function() {
                                         Bloomerang.Util.Stripe = Stripe('pk_live_h7BuXrwizAt906cIApz0LyIv00rntGoxHU'); 
@@ -721,7 +998,7 @@
                         Bloomerang.Data.PayPal.IsPayPalVenmoEnabled = false;
                                            jQuery("form.donation-form .recurring-paypal-venmo-label-info, #donation-form .recurring-paypal-venmo-label-info").remove();
                                            jQuery("#paypal-button-container").remove();
-                                           jQuery("form.donation-form .PayPalVenmo, #donation-form .PayPalVenmo").remove();
+										                                           jQuery("form.donation-form .PayPalVenmo, #donation-form .PayPalVenmo").remove();
                                            jQuery("form.donation-form .PayPal, #donation-form .PayPal").remove();
                                            jQuery("form.donation-form .Venmo, #donation-form .Venmo").remove();
 Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.Data.PayPal.IsVenmoSameDayDonationEnabled = false;
@@ -1221,7 +1498,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         }, "Invalid amount");
         
         jQuery.validator.classRuleSettings.otherAmount = { otherAmount: true };
-
+		
         jQuery.validator.addMethod("number", function (value, element, options) {
           return !value ||
               value
