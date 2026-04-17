@@ -108,6 +108,14 @@
       margin: 0 !important;
     }
 
+
+    .bloomerang-form-wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      width: 100%;
+    }
+
     .bloomerang-form-slot .donation-form {
       font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
       color: var(--text-primary);
@@ -135,8 +143,9 @@
     .bloomerang-form-slot .donation-form .section.donation .field.radio {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 6px;
+      flex-wrap: nowrap;
+      overflow: hidden;
     }
 
     .bloomerang-form-slot .donation-form .section.donation .field.radio input[name="donation-level"] {
@@ -151,11 +160,12 @@
     }
 
     .bloomerang-form-slot .donation-form .section.donation .field.radio .custom-donation-amount {
-      width: 140px !important;
+      width: 120px !important;
       min-height: 40px;
-      margin-left: auto;
+      margin-left: 10px;
       font-weight: 600;
       text-align: right;
+      flex: 0 0 120px;
     }
 
     .bloomerang-form-slot .donation-form .field input,
@@ -180,9 +190,20 @@
     .bloomerang-form-slot .donation-form .field.radio label,
     .bloomerang-form-slot .donation-form .field.checkbox label {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: center;
+      gap: 6px;
       font-weight: 500;
+    }
+
+    .bloomerang-form-slot .donation-form .section.donation .field.radio label {
+      flex: 1 1 auto;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .bloomerang-form-slot .donation-form .section.donation .field.radio .label {
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .bloomerang-form-slot .donation-form .field.radio input,
@@ -231,6 +252,31 @@
       }
     }
 
+
+    @media (max-width: 600px) {
+      .bloomerang-form-wrapper {
+        margin: 20px auto;
+        padding: 12px;
+      }
+
+      .bloomerang-form-slot .donation-form .section.donation .field.radio {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .bloomerang-form-slot .donation-form .section.donation .field.radio .custom-donation-amount {
+        width: 100% !important;
+        margin-left: 0;
+        flex: 1 1 auto;
+      }
+
+      body,
+      .bloomerang-page {
+        overflow-x: hidden;
+      }
+    }
+
     @media (max-width: 640px) {
       .bloomerang-page {
         width: calc(100% - 20px);
@@ -252,7 +298,9 @@
         <div class="bloomerang-card-brand" aria-label="Organization branding">
           <img src="https://static.wixstatic.com/media/193063_22eb8eb31dce43e9ae9acf720da9a622~mv2.png/v1/fill/w_412,h_154,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/193063_22eb8eb31dce43e9ae9acf720da9a622~mv2.png" alt="Fredericksburg ISD Education Foundation" />
         </div>
-        <div id="self-hosted-form-slot" class="bloomerang-form-slot"></div>
+        <div class="bloomerang-form-wrapper">
+          <div id="self-hosted-form-slot" class="bloomerang-form-slot"></div>
+        </div>
       </div>
 
       <aside class="bloomerang-contact-card" aria-label="Contact information">
@@ -397,28 +445,28 @@
 '    <div class="section donation">' + 
 '      <h3>Donation</h3>' + 
 '      <div class="field radio 18445312 required" >' + 
-'<label for="18445312"><input id="18445312" name="donation-level" class="required" type="radio" value="1.000000" maxlength="255"></input><span class="label">$1.00 - FRIEND LEVEL: $1 - $499, please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445312"><input id="18445312" name="donation-level" class="required" type="radio" value="1.000000" maxlength="255"></input><span class="label">FRIEND LEVEL: $1 - $499</span></label>' + 
 '</div>' + 
 '<div class="field radio 18445313 required" >' + 
-'<label for="18445313"><input id="18445313" name="donation-level" class="required" type="radio" value="500.000000" maxlength="255"></input><span class="label">$500.00 - ADVOCATE LEVEL: $500 - $999, please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445313"><input id="18445313" name="donation-level" class="required" type="radio" value="500.000000" maxlength="255"></input><span class="label">ADVOCATE LEVEL: $500 - $999</span></label>' + 
 '</div>' + 
 '<div class="field radio 18445314 required" >' + 
-'<label for="18445314"><input id="18445314" name="donation-level" class="required" type="radio" value="1000.000000" maxlength="255"></input><span class="label">$1,000.00 - PARTNER LEVEL: $1000 - $4999, please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445314"><input id="18445314" name="donation-level" class="required" type="radio" value="1000.000000" maxlength="255"></input><span class="label">PARTNER LEVEL: $1000 - $4999</span></label>' + 
 '</div>' + 
 '<div class="field radio 18445315 required" >' + 
-'<label for="18445315"><input id="18445315" name="donation-level" class="required" type="radio" value="5000.000000" maxlength="255"></input><span class="label">$5,000.00 - CHAMPION LEVEL: $5000-$9999, please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445315"><input id="18445315" name="donation-level" class="required" type="radio" value="5000.000000" maxlength="255"></input><span class="label">CHAMPION LEVEL: $5000 - $9999</span></label>' + 
 '</div>' + 
 '<div class="field radio 18445316 required" >' + 
-'<label for="18445316"><input id="18445316" name="donation-level" class="required" type="radio" value="10000.000000" maxlength="255"></input><span class="label">$10,000.00 - LEGACY LEVEL: $10,000 + , please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445316"><input id="18445316" name="donation-level" class="required" type="radio" value="10000.000000" maxlength="255"></input><span class="label">LEGACY LEVEL: $10,000+</span></label>' + 
 '</div>' + 
 '<div class="field radio 18445317 required" >' + 
-'<label for="18445317"><input id="18445317" name="donation-level" class="required" type="radio" maxlength="255"></input><span class="label">$0.00 - ENDOWMENT FUND, please fill in amount as "Other," then choose "My donation is for" below. Thank you!</span></label>' + 
+'<label for="18445317"><input id="18445317" name="donation-level" class="required" type="radio" maxlength="255"></input><span class="label">ENDOWMENT FUND</span></label>' + 
 '</div>' + 
 '<div class="field radio other-option required" >' + 
 '<label for="other-option"><input id="other-option" name="donation-level" class="required" type="radio" maxlength="255"></input><span class="label">Other</span></label>' + 
 '</div>' + 
 '<div class="field text other-amount" >' + 
-'<input id="other-amount" name="other-amount" class="otherAmount" type="text" placeholder="$0.00"></input>' + 
+'<input id="other-amount" name="other-amount" class="otherAmount" type="text" placeholder="Type amount"></input>' + 
 '</div>' + 
 '' + 
 '</div>' + 
@@ -984,7 +1032,7 @@
                             var existingInput = row.find('.custom-donation-amount');
                             if (!existingInput.length) {
                               var initialAmount = parseAmount(radio.val());
-                              var amountInput = jQuery('<input type="text" class="custom-donation-amount" inputmode="decimal" placeholder="$0.00" />');
+                              var amountInput = jQuery('<input type="text" class="custom-donation-amount" inputmode="decimal" placeholder="Type amount" />');
                               if (!isNaN(initialAmount)) {
                                 amountInput.val(formatAmount(initialAmount));
                                 radio.val(initialAmount.toFixed(2));
