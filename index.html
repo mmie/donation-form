@@ -32,20 +32,20 @@
     }
 
     .bloomerang-card-brand {
-		max-width: 600px;
-		margin: 0 auto 20px;
-		box-sizing: border-box;
-		text-align: left;
-		border-bottom: 1px solid #e4ebf3;
-		padding-bottom: 16px;
-	}
+  max-width: 600px;
+  margin: 0 auto 20px;
+  box-sizing: border-box;
+  text-align: left;
+  border-bottom: 1px solid #e4ebf3;
+  padding-bottom: 16px;
+}
 
     .bloomerang-card-brand img {
-		display: block;
-		max-width: 320px;
-		width: min(100%, 320px);
-		height: auto;
-		margin: 0;
+  display: block;
+  max-width: 320px;
+  width: min(100%, 320px);
+  height: auto;
+  margin: 0;
 }
 
     .bloomerang-layout {
@@ -64,9 +64,9 @@
     }
 
     .bloomerang-form-card {
-      padding: 22px;
-      min-height: 160px;
-    }
+  padding: 22px 22px 0;
+  min-height: 160px;
+}
 
     .bloomerang-contact-card {
       padding: 22px;
@@ -114,11 +114,11 @@
 
 
     .bloomerang-form-wrapper {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      width: 100%;
-    }
+  		max-width: 600px;
+  		margin: 24px auto 40px;
+  		padding: 0;
+  		width: 100%;
+	}
 
     .bloomerang-form-slot .donation-form {
       font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
@@ -1022,9 +1022,15 @@
                           };
 
                           var syncDonationAmounts = function() {
-                            Bloomerang.Util.calculateDonationTrueImpact();
-                            Bloomerang.Util.updateDonateButtonText();
-                          };
+  							Bloomerang.Util.calculateDonationTrueImpact();
+  							Bloomerang.Util.updateDonateButtonText();
+							};
+
+							var clearOtherDonationAmounts = function(activeInput) {
+  								donationSection.find('.custom-donation-amount').not(activeInput).each(function() {
+    							jQuery(this).val('');
+  							});
+							};
 
                           donationSection.find('.field.other-option, .field.other-amount').hide();
 
@@ -1048,34 +1054,39 @@
                             }
 
                             var applyAmountSelection = function() {
-                              var amountValue = parseAmount(existingInput.val());
-                              if (!isNaN(amountValue)) {
-                                radio.prop('checked', true);
-                                radio.val(amountValue.toFixed(2));
-                                existingInput.val(formatAmount(amountValue));
-                              } else {
-                                radio.prop('checked', true);
-                              }
-                              syncDonationAmounts();
-                            };
+  								clearOtherDonationAmounts(existingInput);
+
+ 							var amountValue = parseAmount(existingInput.val());
+  								if (!isNaN(amountValue)) {
+   								radio.prop('checked', true);
+    							radio.val(amountValue.toFixed(2));
+    							existingInput.val(formatAmount(amountValue));
+  								} else {
+    							radio.prop('checked', true);
+ 								}
+  								syncDonationAmounts();
+							};
 
                             existingInput.on('focus click', function() {
-                              radio.prop('checked', true);
-                              syncDonationAmounts();
-                            });
+  								clearOtherDonationAmounts(existingInput);
+  								radio.prop('checked', true);
+  								syncDonationAmounts();
+							});
 
                             existingInput.on('change blur', function() {
                               applyAmountSelection();
                             });
 
                             existingInput.on('input', function() {
-                              var amountValue = parseAmount(existingInput.val());
-                              if (!isNaN(amountValue)) {
-                                radio.prop('checked', true);
-                                radio.val(amountValue.toFixed(2));
-                              }
-                              syncDonationAmounts();
-                            });
+  								clearOtherDonationAmounts(existingInput);
+
+  							var amountValue = parseAmount(existingInput.val());
+  								if (!isNaN(amountValue)) {
+    							radio.prop('checked', true);
+    							radio.val(amountValue.toFixed(2));
+  								}
+  								syncDonationAmounts();
+							});
 
                             row.on('click', function(event) {
                               if (!jQuery(event.target).is('.custom-donation-amount')) {
