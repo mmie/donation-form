@@ -27,9 +27,8 @@
     }
 
     .bloomerang-page {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
+      width: min(1120px, 100% - 32px);
+      margin: 24px auto 48px;
     }
 
     .bloomerang-card-brand {
@@ -47,8 +46,8 @@
 
     .bloomerang-layout {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
+      grid-template-columns: minmax(0, 2.3fr) minmax(240px, 1fr);
+      gap: 22px;
       align-items: start;
     }
 
@@ -114,13 +113,6 @@
       color: var(--text-primary);
     }
 
-    .bloomerang-form-slot .donation-form input,
-    .bloomerang-form-slot .donation-form select,
-    .bloomerang-form-slot .donation-form textarea {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
     .bloomerang-form-slot .donation-form .section {
       border: 1px solid #e2e9f2;
       border-radius: 12px;
@@ -143,41 +135,27 @@
     .bloomerang-form-slot .donation-form .section.donation .field.radio {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .bloomerang-form-slot .donation-form .section.donation .field.radio input[type="radio"] {
-      display: none;
-    }
-
-    .bloomerang-form-slot .donation-form .section.donation .field.radio label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      margin-bottom: 0;
-      cursor: pointer;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .bloomerang-form-slot .donation-form .section.donation .field.radio input[type="radio"]:checked + .label {
-      background: #f0f6ff;
-      border-color: #2d6cdf;
-      border-radius: 4px;
-      padding: 2px 4px;
+    .bloomerang-form-slot .donation-form .section.donation .field.radio input[name="donation-level"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0 !important;
+      height: 0;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
     }
 
     .bloomerang-form-slot .donation-form .section.donation .field.radio .custom-donation-amount {
-      width: 120px !important;
+      width: 140px !important;
       min-height: 40px;
-      margin-left: 10px;
+      margin-left: auto;
       font-weight: 600;
       text-align: right;
-      flex: 0 0 120px;
     }
 
     .bloomerang-form-slot .donation-form .field input,
@@ -253,32 +231,16 @@
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .bloomerang-page {
-        max-width: 100%;
-        margin: 20px auto;
-        padding: 12px;
+        width: calc(100% - 20px);
+        margin-top: 10px;
       }
 
       .bloomerang-form-card,
       .bloomerang-contact-card {
         border-radius: 12px;
-        padding: 12px;
-      }
-
-      .bloomerang-form-slot .donation-form .section.donation .field.radio {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .bloomerang-form-slot .donation-form .section.donation .field.radio .custom-donation-amount {
-        width: 100% !important;
-        flex: 1 1 auto;
-        margin-left: 0;
-      }
-
-      body {
-        overflow-x: hidden;
+        padding: 16px;
       }
     }
   </style>
@@ -456,7 +418,7 @@
 '<label for="other-option"><input id="other-option" name="donation-level" class="required" type="radio" maxlength="255"></input><span class="label">Other</span></label>' + 
 '</div>' + 
 '<div class="field text other-amount" >' + 
-'<input id="other-amount" name="other-amount" class="otherAmount" type="text" placeholder="Type amount"></input>' + 
+'<input id="other-amount" name="other-amount" class="otherAmount" type="text" placeholder="$0.00"></input>' + 
 '</div>' + 
 '' + 
 '</div>' + 
@@ -773,6 +735,31 @@
 '<option value="YE">Yemen</option>' + 
 '<option value="ZM">Zambia</option>' + 
 '<option value="ZW">Zimbabwe</option>' + 
+'</select>' + 
+'</div>' + 
+'<div class="field  street-address required" >' + 
+'<label for="street-address"><span class="label">Address</span><span class="required-star">*</span></label>' + 
+'<textarea id="street-address" name="street-address" class="required"></textarea>' + 
+'</div>' + 
+'<div class="field text city required" >' + 
+'<label for="city"><span class="label">City</span><span class="required-star">*</span></label>' + 
+'<input id="city" name="city" class="required" type="text" data-us-label="City" data-bm-label="Parish"></input>' + 
+'</div>' + 
+'<div class="field  state required" >' + 
+'<label for="state">State<span class="required-star">*</span></label>' + 
+'<select id="state" name="state" class="required"><option value=""></option>' + 
+'<option value="AL">Alabama</option>' + 
+'<option value="AK">Alaska</option>' + 
+'<option value="AS">American Samoa</option>' + 
+'<option value="AZ">Arizona</option>' + 
+'<option value="AR">Arkansas</option>' + 
+'<option value="AE">Armed Forces Africa, Canada, Europe, Middle East</option>' + 
+'<option value="AA">Armed Forces Americas (except Canada)</option>' + 
+'<option value="AP">Armed Forces Pacific</option>' + 
+'<option value="CA">California</option>' + 
+'<option value="CO">Colorado</option>' + 
+'<option value="CT">Connecticut</option>' + 
+'<option value="DE">Delaware</option>' + 
 '<option value="DC">District of Columbia</option>' + 
 '<option value="FL">Florida</option>' + 
 '<option value="GA">Georgia</option>' + 
@@ -989,17 +976,15 @@
 
                             var label = row.find('span.label');
                             if (label.length) {
-                              var cleanLabel = label.text()
-                                .replace(/^\$[\d,]+(?:\.\d+)?\s*-\s*/,'')
-                                .replace(/,\s*please fill in amount as "Other," then choose "My donation is for" below\.?\s*Thank you!?/i, '')
-                                .trim();
-                              label.text(cleanLabel);
+                              label.text(
+                                label.text().replace(/,\s*please fill in amount as "Other," then choose "My donation is for" below\.?\s*Thank you!?/i, '').trim()
+                              );
                             }
 
                             var existingInput = row.find('.custom-donation-amount');
                             if (!existingInput.length) {
                               var initialAmount = parseAmount(radio.val());
-                              var amountInput = jQuery('<input type="text" class="custom-donation-amount" inputmode="decimal" placeholder="Type amount" />');
+                              var amountInput = jQuery('<input type="text" class="custom-donation-amount" inputmode="decimal" placeholder="$0.00" />');
                               if (!isNaN(initialAmount)) {
                                 amountInput.val(formatAmount(initialAmount));
                                 radio.val(initialAmount.toFixed(2));
@@ -1171,9 +1156,6 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
                                 true);
                             
                             if((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm && Bloomerang.reCaptchaV3SiteKey)) {
-                                 Bloomerang.Util.load(`https://www.google.com/recaptcha/api.js?onload=captchaV3LoadCallback&render=${Bloomerang.reCaptchaV3SiteKey}`,
-                                    function() { return Bloomerang.gRecaptchaV3Loaded; },
-							                            if((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm && Bloomerang.reCaptchaV3SiteKey)) {
                                  Bloomerang.Util.load(`https://www.google.com/recaptcha/api.js?onload=captchaV3LoadCallback&render=${Bloomerang.reCaptchaV3SiteKey}`,
                                     function() { return Bloomerang.gRecaptchaV3Loaded; },
                                     function() {
@@ -1365,8 +1347,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         };
         
         Bloomerang.Util.applyDonationCustomFields = function (obj, type) {
-        
-            // Clear any fields from a previous failed submission
+			            // Clear any fields from a previous failed submission
             obj.clearCustomFields();
         
             // Apply all <input> (not multiselect), <select> and <textarea> fields
@@ -1475,7 +1456,8 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
                 jQuery(e).toggle();
             }); 
         })
-							        // The other-amount field is only equired when the "Other" donation-level is selected
+        
+        // The other-amount field is only equired when the "Other" donation-level is selected
         toggleOtherAmountRequired = function () { 
           jQuery(".donation-form #other-amount").toggleClass("required",
             jQuery(".donation-form #other-option").prop("checked"));
@@ -1812,7 +1794,8 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
             }
           }
         };
-							        submitDonation = function() {
+
+        submitDonation = function() {
           if (!Bloomerang.continueFinancialSubmission(jQuery("#donation-form"))) { return false; }
   
           Bloomerang.Api.OnSubmit = Bloomerang.Widget.Donation.OnSubmit;
@@ -1947,7 +1930,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
             jQuery("#paypal-button-container").show();
           }
           else if(jQuery(this).attr("id") == "PayPal") {
-            jQuery("#donation-form .accountNumber, \
+			              jQuery("#donation-form .accountNumber, \
                     #donation-form .routingNumber, \
                     #donation-form .sample-check").hide();
             jQuery("#stripe-cc-fields").hide();
@@ -2005,8 +1988,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
         
 })(jQuery);
     };
-    
-                var startBloomerangLoad = function() {
+	                var startBloomerangLoad = function() {
                     if (window.bloomerangLoadStarted == undefined) {
                         window.bloomerangLoadStarted = true;
                         var script = document.createElement('script');
