@@ -32,7 +32,10 @@
     }
 
     .bloomerang-card-brand {
-      margin-bottom: 20px;
+      max-width: 600px;
+      margin: 0 auto 20px;
+      box-sizing: border-box;
+      text-align: center;
       border-bottom: 1px solid #e4ebf3;
       padding-bottom: 16px;
     }
@@ -42,6 +45,7 @@
       max-width: 320px;
       width: min(100%, 320px);
       height: auto;
+      margin: 0 auto;
     }
 
     .bloomerang-layout {
@@ -1034,7 +1038,7 @@
                               label.text(
                                 label.text().replace(/,\s*please fill in amount as "Other," then choose "My donation is for" below\.?\s*Thank you!?/i, '').trim()
                               );
-                            }
+								                            }
 
                             var existingInput = row.find('.custom-donation-amount');
                             if (!existingInput.length) {
@@ -1398,7 +1402,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
 
         Bloomerang.Util.applyDonationCustomFields = function (obj, type) {
 			            // Clear any fields from a previous failed submission
-		            obj.clearCustomFields();
+            obj.clearCustomFields();
 
             // Apply all <input> (not multiselect), <select> and <textarea> fields
             jQuery(".donation-form .section.custom-fields :input:not(a > input, select)[id*=" + type + "]").each(function() {
@@ -1554,7 +1558,7 @@ Bloomerang.Data.PayPal.IsPayPalPaymentMethodVaultingEnabled = false;Bloomerang.D
               impactAmount = Number((Math.floor((newTotal - amount)*100)/100).toFixed(2));
             }
             else{
-              impactAmount = isStripeExpress
+				              impactAmount = isStripeExpress
                 ? Number((Math.floor((newTotal - amount)*100)/100).toFixed(2))
                 : Number((newTotal - amount).toFixed(2));
             }
