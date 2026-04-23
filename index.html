@@ -1047,14 +1047,66 @@ var successHtml18441216 = '<div class=\'donation-success\'><h2>Thank You for You
     initializeCaptcha();
   }
 
+  async function getRecaptchaV3Token() {
+    const token = await new Promise((resolve, reject) => {
+      grecaptcha.ready(function() {
+        grecaptcha.execute(Bloomerang.reCaptchaV3SiteKey, { action: 'submit' }).then(function(token) {
+          resolve(token);
+        });
+      });
+    });
+
+    return token;
+  }
+
   function initializeCaptcha() {
     Bloomerang.Util.load('https://www.google.com/recaptcha/api.js?onload=captchaLoadCallback&render=explicit',
       function() { return Bloomerang.gRecaptchaLoaded; },
       function() {
         jQuery('.donation-form .section.captcha').removeAttr('style');
         jQuery('form.donation-form').data('captcha-id', grecaptcha.render('captcha18441216', { 'sitekey': '6LfZCaosAAAAAP6u-H_gVZFZyUNGawD9QFt1PlQC' }));
+        if ((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.reCaptchaV3SiteKey && Bloomerang.isDonationForm)) {
+          jQuery('.donation-form .section.captcha').attr('style', 'display: none');
+        }
       },
       true, true);
+
+    if ((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.isDonationForm && Bloomerang.reCaptchaV3SiteKey)) {
+      Bloomerang.Util.load(`https://www.google.com/recaptcha/api.js?onload=captchaV3LoadCallback&render=${Bloomerang.reCaptchaV3SiteKey}`,
+        function() { return Bloomerang.gRecaptchaV3Loaded; },
+        function() {
+          grecaptcha.ready(function() {
+            grecaptcha.execute(Bloomerang.reCaptchaV3SiteKey, { action: 'submit' }).then(function(token) {
+              async function success(result) {
+                if (parseFloat(result.Score) < Bloomerang.gRecaptchaV3Threshold) {
+                  Bloomerang.isForcePuzzle = true;
+                  jQuery('.donation-form .section.captcha').attr('style', 'display: block');
+                } else {
+                  const initialRecaptchaV3Token = await getRecaptchaV3Token();
+                  Bloomerang.captchaResponseV3(initialRecaptchaV3Token);
+                  setInterval(async () => {
+                    const recaptchaV3Token = await getRecaptchaV3Token();
+                    Bloomerang.captchaResponseV3(recaptchaV3Token);
+                  }, 80000);
+                }
+              }
+
+              function failure(result) {
+                Bloomerang.isForcePuzzle = true;
+                jQuery('.donation-form .section.captcha').attr('style', 'display: block');
+              }
+
+              var data = {
+                token: token,
+                isSelfHosted: !Bloomerang.isBloomerangHostedForm
+              };
+
+              Bloomerang.Api._post('v1/ReCaptchaV3', data, success, failure);
+            });
+          });
+        },
+        true, true);
+    }
   }
 
   Bloomerang.transactionFee = 0.3;
@@ -1095,7 +1147,7 @@ var successHtml18441216 = '<div class=\'donation-success\'><h2>Thank You for You
   };
 
   Bloomerang.ValidateDonationFormCaptcha = function() {
-    if (typeof(grecaptcha) !== "undefined" && jQuery("#captcha" + Bloomerang.Data.WidgetIds.Donation).children().length) {
+    if (typeof(grecaptcha) !== "undefined" && (jQuery("#captcha" + Bloomerang.Data.WidgetIds.Donation).children().length || ((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.reCaptchaV3SiteKey)))) {
       var captchaResponse = grecaptcha.getResponse(jQuery(".donation-form").data("captcha-id"));
       if (captchaResponse) {
         jQuery(".donation-form .noCaptchaResponseError").hide();
@@ -1263,7 +1315,11 @@ var successHtml18441216 = '<div class=\'donation-success\'><h2>Thank You for You
 
   collectPayment = async function() {
     var form = jQuery("#donation-form");
-    if (!Bloomerang.ValidateDonationFormCaptcha()) { return false; }
+    if ((Bloomerang.donationFormReCaptchaV3Flag && Bloomerang.isBloomerangHostedForm) || (Bloomerang.donationFormReCaptchaV3SelfHostedFlag && !Bloomerang.isBloomerangHostedForm && Bloomerang.reCaptchaV3SiteKey)) {
+      if (!Bloomerang.ValidateDonationFormCaptcha() && Bloomerang.isForcePuzzle) { return false; }
+    } else {
+      if (!Bloomerang.ValidateDonationFormCaptcha()) { return false; }
+    }
     if (!form.valid()) { return false; }
     if (Bloomerang.Util.isProcessorStripe() && !Bloomerang.Util.StripeCardIsValid) {
       document.getElementById('card-errors').textContent = "Valid card info is required";
